@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsn.dao.User_roleMapper">
+  <resultMap id="userResult" type="com.wsn.pojo.User">
+  	<id column="u_id" property="u_id" jdbcType="INTEGER" />  
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />  
+    <result column="password" property="password" jdbcType="VARCHAR" />  
+    <result column="account" property="account" jdbcType="INTEGER" />  
+  </resultMap>
+  
+  <resultMap id="roleResult" type="com.wsn.pojo.Role">
+  	<id column="r_id" property="r_id" jdbcType="INTEGER"/>
+  	<result column="role_name" property="role_name" jdbcType="VARCHAR"/>
+  	<result column="role_number" property="role_number" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="BaseResultMap" type="com.wsn.pojo.User_role">
+    <id column="ur_id" jdbcType="INTEGER" property="urId" />
+   	<association column="u_id" property="user" javaType="com.wsn.pojo.User" jdbcType="INTEGER" resultMap="userResult">
+   	</association>
+   	<association property="role" column="r_id" javaType="com.wsn.pojo.Role" jdbcType="INTEGER" resultMap="roleResult">
+   	</association>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ur.ur_id, ur.u_id, ur.r_id
+  </sql>
+  
+  <sql id="Urid_list">
+  	ur_id,u_id,r_id
+  </sql>
+  
+  <!-- 关联user和role表的多表查询 -->
+  <select id="selectURByUid" parameterType="Integer" resultMap="BaseResultMap">
+  	select * 
+  	from user_role ur,user u,role r
+  	where ur.u_id=u.u_id and ur.r_id=r.r_id and u.u_id=#{uId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据用户角色表的主键查询一个用户角色关系 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Urid_list" />
+    from user_role
+    where ur_id = #{urId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 解绑一个用户和角色 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_role
+    where ur_id = #{urId,jdbcType=INTEGER} 
+  </delete>
+  
+  <!-- 绑定用户和一个角色 -->
+  <insert id="insert" parameterType="com.wsn.pojo.User_role">
+    insert into user_role (ur_id, u_id, r_id
+      )
+    values (#{urId,jdbcType=INTEGER}, #{user.u_id,jdbcType=INTEGER}, #{role.r_id,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <!-- 绑定一个用户和角色 -->
+  <insert id="insertSelective" parameterType="com.wsn.pojo.User_role">
+    insert into user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="urId != null">
+        ur_id,
+      </if>
+      <if test="uId != null">
+        u_id,
+      </if>
+      <if test="rId != null">
+        r_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="urId != null">
+        #{urId,jdbcType=INTEGER},
+      </if>
+      <if test="uId != null">
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="rId != null">
+        #{rId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 根据主键修改一个用户角色 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.wsn.pojo.User_role">
+    update user_role
+    <set>
+      <if test="uId != null">
+        u_id = #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="rId != null">
+        r_id = #{rId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ur_id = #{urId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据Id修改一个用户角色 -->
+  <update id="updateByPrimaryKey" parameterType="com.wsn.pojo.User_role">
+    update user_role
+    set u_id = #{uId,jdbcType=INTEGER},
+      r_id = #{rId,jdbcType=INTEGER}
+    where ur_id = #{urId,jdbcType=INTEGER}
+  </update>
+</mapper>

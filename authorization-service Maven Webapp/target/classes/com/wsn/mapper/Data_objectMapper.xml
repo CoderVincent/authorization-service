@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsn.dao.Data_objectMapper">
+  
+  <resultMap id="dataObjectType" type="com.wsn.pojo.Data_object_type">
+    <id column="dot_id" jdbcType="INTEGER" property="dotId" />
+    <result column="dot_name" jdbcType="VARCHAR" property="dotName"/>
+  </resultMap>
+  
+  <resultMap id="BaseResultMap" type="com.wsn.pojo.Data_object">
+    <id column="do_id" jdbcType="INTEGER" property="doId" />
+    <result property="dotID" column="dot_id" jdbcType="INTEGER"/>
+	<association property="dot" column="dot_id" javaType="com.wsn.pojo.Data_object" resultMap="dataObjectType" jdbcType="INTEGER"></association>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    do_id, dot_id,do_name
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_object
+    where do_id = #{doId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_object
+    where do_id = #{doId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.wsn.pojo.Data_object">
+    insert into data_object (do_id, dot_id, do_name)
+    values (#{doId,jdbcType=INTEGER}, #{dotId,jdbcType=INTEGER},#{doName,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.wsn.pojo.Data_object">
+    insert into data_object
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="doId != null">
+        do_id,
+      </if>
+      <if test="dotId != null">
+        dot_id,
+      </if>
+      <if test="doName != null">
+        do_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="doId != null">
+        #{doId,jdbcType=INTEGER},
+      </if>
+      <if test="dotId != null">
+        #{dotId,jdbcType=INTEGER},
+      </if>
+      <if test="doName != null">
+        #{dotName,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.wsn.pojo.Data_object">
+    update data_object
+    <set>
+      <if test="dotId != null">
+        dot_id = #{dotId,jdbcType=INTEGER},
+      </if>
+      <if test="dotId != null">
+        do_name = #{dotName,jdbcType=INTEGER},
+      </if>
+    </set>
+    where do_id = #{doId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wsn.pojo.Data_object">
+    update data_object
+    set dot_id = #{dotId,jdbcType=INTEGER},
+    do_name = #{doName,jdbcType=INTEGER}
+    where do_id = #{doId,jdbcType=INTEGER}
+  </update>
+</mapper>

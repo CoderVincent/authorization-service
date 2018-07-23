@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsn.dao.Role_authorization_objectMapper">
+ 
+  <resultMap id="dataObjectType" type="com.wsn.pojo.Data_object_type">
+    <id column="dot_id" jdbcType="INTEGER" property="dotId" />
+    <result column="dot_name" jdbcType="VARCHAR" property="dotName"/>
+  </resultMap>
+  
+  <resultMap id="dataObject" type="com.wsn.pojo.Data_object">
+    <id column="do_id" jdbcType="INTEGER" property="doId" />
+    <result property="dotID" column="dot_id" jdbcType="INTEGER"/>
+	<association property="dot" column="dot_id" javaType="com.wsn.pojo.Data_object" resultMap="dataObjectType" jdbcType="INTEGER"></association>
+  </resultMap>
+  
+  <resultMap type="com.wsn.pojo.Role" id="role">
+  	<id column="r_id" property="r_id" jdbcType="INTEGER"/>
+  	<result column="role_name" property="role_name" jdbcType="INTEGER"/>
+  	<result column="role_number" property="role_number" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  <resultMap id="operate_type" type="com.wsn.pojo.Operate_type">
+    <id column="ot_id" jdbcType="INTEGER" property="otId" />
+    <result column="ot_number" jdbcType="VARCHAR" property="otNumber" />
+    <result column="ot_name" jdbcType="VARCHAR" property="otName" />
+    <result column="ot_describtion" jdbcType="VARCHAR" property="otDescribtion" />
+  </resultMap>
+
+  <resultMap id="resource" type="com.wsn.pojo.Resource">
+    <id column="resource_id" jdbcType="INTEGER" property="resourceId" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_number" jdbcType="VARCHAR" property="resourceNumber" />
+    <result column="resource_describe" jdbcType="VARCHAR" property="resourceDescribe" />
+  </resultMap>
+  
+  <resultMap type="com.wsn.pojo.Function" id="function">
+  	<id column="f_id" property="fId" jdbcType="INTEGER"/>
+  	<result column="function_number" property="functionNumber" jdbcType="VARCHAR"/>
+  	<result column="function_name" property="functionName" jdbcType="VARCHAR"/>
+  	<result column="description" property="description" jdbcType="VARCHAR"/>
+	<association property="resource" column="resource_id" javaType="com.wsn.pojo.Resource" resultMap="resource" jdbcType="INTEGER"></association>
+	<association property="operate_type" column="ot_id" javaType="com.wsn.pojo.Operate_type" resultMap="operate_type" jdbcType="INTEGER"></association>
+  </resultMap>
+  
+   <resultMap id="roleAuthorization" type="com.wsn.pojo.Role_authorization">
+    <id column="ra_id" jdbcType="INTEGER" property="raId" />
+    <association property="role" column="r_id" javaType="com.wsn.pojo.Role" jdbcType="INTEGER" resultMap="role"></association>
+    <association property="function" column="f_id" javaType="com.wsn.pojo.Function" jdbcType="INTEGER" resultMap="function"></association>
+  </resultMap>
+
+  <resultMap id="BaseResultMap" type="com.wsn.pojo.Role_authorization_object">
+    <id column="rao_id" jdbcType="INTEGER" property="raoId" />
+	<association property="roleAuthorization" column="ra_id" javaType="com.wsn.pojo.Role_authorization" resultMap="roleAuthorization" jdbcType="INTEGER"/>
+  	<association property="data_object" column="do_id" javaType="com.wsn.pojo.Data_object" resultMap="dataObject" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List">
+    rao_id, ra_id, do_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from role_authorization_object
+    where rao_id = #{raoId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from role_authorization_object
+    where rao_id = #{raoId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.wsn.pojo.Role_authorization_object">
+    insert into role_authorization_object (rao_id, ra_id, do_id
+      )
+    values (#{raoId,jdbcType=INTEGER}, #{raId,jdbcType=INTEGER}, #{doId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wsn.pojo.Role_authorization_object">
+    insert into role_authorization_object
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="raoId != null">
+        rao_id,
+      </if>
+      <if test="raId != null">
+        ra_id,
+      </if>
+      <if test="doId != null">
+        do_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="raoId != null">
+        #{raoId,jdbcType=INTEGER},
+      </if>
+      <if test="raId != null">
+        #{raId,jdbcType=INTEGER},
+      </if>
+      <if test="doId != null">
+        #{doId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wsn.pojo.Role_authorization_object">
+    update role_authorization_object
+    <set>
+      <if test="raId != null">
+        ra_id = #{raId,jdbcType=INTEGER},
+      </if>
+      <if test="doId != null">
+        do_id = #{doId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where rao_id = #{raoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wsn.pojo.Role_authorization_object">
+    update role_authorization_object
+    set ra_id = #{raId,jdbcType=INTEGER},
+      do_id = #{doId,jdbcType=INTEGER}
+    where rao_id = #{raoId,jdbcType=INTEGER}
+  </update>
+</mapper>

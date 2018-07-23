@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >  
+<mapper namespace="com.wsn.dao.RoleDao" >    
+    <resultMap id="BaseResultMap" type="com.wsn.pojo.Role">  
+        <result column="r_id" property="r_id" jdbcType="INTEGER" />  
+        <result column="role_name" property="role_name" jdbcType="VARCHAR" />  
+        <result column="role_number" property="role_number" jdbcType="INTEGER" />  
+    </resultMap>  
+  
+    <sql id="Base_Column_List">  
+        r_id,role_name,role_number  
+    </sql>  
+  
+    <!-- 查询用户-->  
+    <select id="queryByPrimaryKey" resultMap="BaseResultMap"  
+        parameterType="java.lang.Integer">  
+        select  
+        <include refid="Base_Column_List" />  
+        from role  
+        where r_id = #{id,jdbcType=INTEGER}  
+    </select>  
+      
+    <!-- 查询用户-->  
+    <select id="getAllRole" resultMap="BaseResultMap">  
+        select  
+        <include refid="Base_Column_List" />  
+        from role  
+    </select>  
+      
+    <!-- 批量查询用户-->  
+    <select id="queryRoleByBatch" resultMap="BaseResultMap"  
+        parameterType="java.util.Map">  
+        select  
+        <include refid="Base_Column_List" />  
+        from role  
+        where r_id in  
+        <foreach collection="idList" item="roleId" index="index" open="(" separator="," close=")">  
+             #{roleId,jdbcType=DECIMAL}  
+        </foreach>  
+    </select>  
+      
+    <!-- 插入用户 -->  
+    <insert id="insertRole" parameterType="com.wsn.pojo.Role">  
+        insert into role    
+        <trim prefix="(" suffix=")" suffixOverrides="," >    
+          <if test="r_id != null" >    
+            r_id,    
+          </if>    
+          <if test="role_name != null" >    
+            role_name,    
+          </if>    
+          <if test="role_number != null" >    
+            role_number,    
+          </if>  
+        </trim>    
+        <trim prefix="values (" suffix=")" suffixOverrides="," >    
+          <if test="r_id != null" >    
+            #{r_id,jdbcType=INTEGER},    
+          </if>    
+          <if test="role_name != null" >    
+            #{role_name,jdbcType=VARCHAR},    
+          </if>   
+          <if test="role_number != null" >    
+            #{role_number,jdbcType=INTEGER},    
+          </if>  
+        </trim>     
+    </insert>  
+      
+    <!-- 批量插入用户 -->  
+    <insert id="insertRoleByBatch" parameterType="java.util.List" >  
+    insert into Role  
+       (r_id,  
+        role_name,  
+        role_number
+        )  
+    select A.* from  
+         (  
+         <foreach collection="list" item="user" index="index" separator="union">  
+             select   
+             #{role.r_id,jdbcType=INTEGER},  
+             #{role.role_name,jdbcType=VARCHAR},  
+             #{role.role_number,jdbcType=VARCHAR},  
+              from dual  
+         </foreach>  
+         ) A  
+    </insert>  
+  
+    <!-- 删除用户 -->  
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">  
+        delete from role  
+        where r_id = #{r_id,jdbcType=INTEGER}    
+    </delete>  
+      
+    <!-- 批量删除用户 -->  
+    <delete id="deleteRoleByBatch" parameterType="java.util.Map" >  
+     delete from role  
+     where r_id IN   
+         <foreach item="ids" collection="iList" open="(" separator="," close=")">  
+             #{ids,jdbcType=DECIMAL}  
+         </foreach>  
+    </delete> 
+    
+    <!--删除所有用户-->
+    <delete id="deleteAllRoles">
+   		delete * from role
+    </delete> 
+  
+    <!-- 更新用户 -->  
+    <update id="updateByPrimaryKey" parameterType="com.wsn.pojo.Role" >    
+        update role    
+        <set >    
+          <if test="role_name != null" >    
+            role_name = #{role_name,jdbcType=VARCHAR},    
+          </if>    
+          <if test="role_number != null" >    
+            role_number = #{role_number,jdbcType=VARCHAR},    
+          </if>    
+        </set>    
+        where r_id = #{r_id,jdbcType=INTEGER}   
+    </update>  
+    
+</mapper>  

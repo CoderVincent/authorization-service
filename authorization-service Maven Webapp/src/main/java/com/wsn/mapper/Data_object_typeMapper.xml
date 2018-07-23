@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsn.dao.Data_object_typeMapper">
+
+  <resultMap id="BaseResultMap" type="com.wsn.pojo.Data_object_type">
+    <id column="dot_id" jdbcType="INTEGER" property="dotId" />
+    <result column="dot_name" jdbcType="VARCHAR" property="dotName"/>
+  </resultMap>
+  
+  <select id="queryDotById" parameterType="INTEGER" resultMap="BaseResultMap">
+  	select * from data_object_type where dot_id=#{dotId,jdbcType=INTEGER}
+  </select>
+  <update id="updateDotById" parameterType="com.wsn.pojo.Data_object_type">
+  	update data_object_type 
+  	set dot_name=#{dotName,jdbcType=INTEGER}
+  	where dot_id=#{dotId,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_object_type
+    where dot_id = #{dotId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.wsn.pojo.Data_object_type">
+    insert into data_object_type (dot_id,dot_name)
+    values (#{dotId,jdbcType=INTEGER},#{dotName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wsn.pojo.Data_object_type">
+    insert into data_object_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dotId != null">
+        dot_id,
+      </if>
+      <if test="dotName != null">
+        dot_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dotId != null">
+        #{dotId,jdbcType=INTEGER},
+      </if>
+      <if test="dotId != null">
+        #{dotName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
